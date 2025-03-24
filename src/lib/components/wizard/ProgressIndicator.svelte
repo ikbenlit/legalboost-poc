@@ -1,38 +1,29 @@
 <script lang="ts">
     export let currentStep: number;
-    export let totalSteps: number = 4;
 
     const steps = [
-        'Contract Type',
-        'Bedrijfsgegevens',
-        'Contractant',
-        'Contract Details'
+        { number: 1, title: 'Contract Type' },
+        { number: 2, title: 'Bedrijfsgegevens' },
+        { number: 3, title: 'Contractant' },
+        { number: 4, title: 'Details' }
     ];
 </script>
 
-<div class="w-full py-4">
+<div class="mb-8">
     <div class="flex items-center justify-between">
-        {#each steps as step, i}
+        {#each steps as step}
             <div class="flex items-center">
-                <div class={`
-                    flex items-center justify-center w-8 h-8 rounded-full
-                    ${i + 1 === currentStep ? 'bg-blue-600 text-white' : 
-                      i + 1 < currentStep ? 'bg-green-500 text-white' : 
-                      'bg-gray-200 text-gray-600'}
-                `}>
-                    {#if i + 1 < currentStep}
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                    {:else}
-                        {i + 1}
-                    {/if}
+                <div class={`flex items-center justify-center w-8 h-8 rounded-full border-2 
+                    ${currentStep >= step.number ? 'border-indigo-600 bg-indigo-600 text-white' : 'border-gray-300 text-gray-500'}`}>
+                    {step.number}
                 </div>
-                <span class={`ml-2 text-sm ${i + 1 === currentStep ? 'text-blue-600 font-medium' : 'text-gray-500'}`}>
-                    {step}
-                </span>
-                {#if i < steps.length - 1}
-                    <div class={`w-12 h-1 mx-4 ${i + 1 < currentStep ? 'bg-green-500' : 'bg-gray-200'}`}></div>
+                <div class="hidden sm:block ml-2">
+                    <p class={`text-sm font-medium ${currentStep >= step.number ? 'text-indigo-600' : 'text-gray-500'}`}>
+                        {step.title}
+                    </p>
+                </div>
+                {#if step.number < steps.length}
+                    <div class={`flex-1 w-16 sm:w-32 h-0.5 mx-2 ${currentStep > step.number ? 'bg-indigo-600' : 'bg-gray-300'}`}></div>
                 {/if}
             </div>
         {/each}

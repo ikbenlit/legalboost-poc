@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 import type { ContractDetails } from '$lib/stores/wizardStore.js';
-import { generateContract } from '$lib/claude.js';
+import { generateEnhancedContract } from '$lib/claude.js';
 
 export const POST = (async ({ request }) => {
     try {
@@ -16,15 +16,24 @@ export const POST = (async ({ request }) => {
             }, { status: 400 });
         }
 
-        const result = await generateContract({
+        if (!details.sector) {
+            console.error('Missing sector');
+            return json({
+                success: false,
+                error: 'Sector is niet gespecificeerd'
+            }, { status: 400 });
+        }
+
+        const result = await generateEnhancedContract({
             contractType: details.contractType,
             details: details
         });
-        console.log('Generated contract result:', result);
+        console.log('Generated enhanced contract result:', result);
 
         return json({
             success: true,
-            content: result.content
+            content: result.content,
+            analysis: result.analysis
         });
     } catch (error) {
         console.error('Error generating contract:', error);

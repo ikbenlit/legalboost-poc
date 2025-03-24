@@ -1,16 +1,45 @@
 <script lang="ts">
     import { wizardStore, type ContractDetails } from '$lib/stores/wizardStore';
     import ProgressIndicator from '$lib/components/wizard/ProgressIndicator.svelte';
+    import ContractAnalysis from '$lib/components/ContractAnalysis.svelte';
     import { enhance } from '$app/forms';
     import { goto } from '$app/navigation';
+    import { onMount } from 'svelte';
     
     let loading = false;
     let error = '';
     let generatedContract = '';
+    let contractAnalysis: AnalysisResult | null = null;
     let showSuccess = false;
+
+    interface AnalysisResult {
+        risks: Array<{
+            severity: 'high' | 'medium' | 'low';
+            description: string;
+        }>;
+        recommendations: string[];
+        considerations: string[];
+    }
 
     $: currentStep = $wizardStore.currentStep;
     $: details = $wizardStore.details;
+
+    onMount(() => {
+        // Voeg keyboard listener toe
+        document.addEventListener('keydown', handleKeydown);
+        return () => {
+            // Cleanup bij unmount
+            document.removeEventListener('keydown', handleKeydown);
+        };
+    });
+
+    function handleKeydown(event: KeyboardEvent) {
+        // Check voor Ctrl+T of Cmd+T (Mac)
+        if ((event.ctrlKey || event.metaKey) && event.key === 't') {
+            event.preventDefault(); // Voorkom browser tab open
+            handleReset(true);
+        }
+    }
 
     function handleNext() {
         if (validateCurrentStep()) {
@@ -22,10 +51,84 @@
         wizardStore.previousStep();
     }
 
-    function handleReset() {
+    type TestData = {
+        [key: string]: ContractDetails;
+    };
+
+    function handleReset(useTestData = false) {
         generatedContract = '';
         showSuccess = false;
-        wizardStore.reset();
+
+        if (useTestData) {
+            const testData: TestData = {
+                arbeidsovereenkomst: {
+                    contractType: 'arbeidsovereenkomst',
+                    sector: 'technologie',
+                    companyInfo: {
+                        name: 'TechCorp B.V.',
+                        kvkNumber: '12345678',
+                        address: 'Innovatieweg 42, Amsterdam'
+                    },
+                    contractorInfo: {
+                        name: 'Jan de Tester',
+                        address: 'Teststraat 123, Rotterdam',
+                        bsn: '123456789'
+                    },
+                    contractSpecifics: {
+                        startDate: '2024-04-01',
+                        endDate: '2025-04-01',
+                        salary: 4500,
+                        hoursPerWeek: 40,
+                        additionalNotes: 'Inclusief laptop en telefoon'
+                    }
+                },
+                leveranciersovereenkomst: {
+                    contractType: 'leveranciersovereenkomst',
+                    sector: 'zakelijke_dienstverlening',
+                    companyInfo: {
+                        name: 'ConsultancyPro B.V.',
+                        kvkNumber: '87654321',
+                        address: 'Zakenlaan 1, Utrecht'
+                    },
+                    contractorInfo: {
+                        name: 'IT Solutions N.V.',
+                        address: 'Serviceweg 55, Den Haag',
+                        kvkNumber: '98765432'
+                    },
+                    contractSpecifics: {
+                        startDate: '2024-04-01',
+                        rate: 95,
+                        hoursPerWeek: 24,
+                        additionalNotes: 'Inclusief maandelijkse rapportage'
+                    }
+                },
+                geheimhoudingsverklaring: {
+                    contractType: 'geheimhoudingsverklaring',
+                    sector: 'technologie',
+                    companyInfo: {
+                        name: 'InnovatieTech B.V.',
+                        kvkNumber: '11223344',
+                        address: 'Hightech Park 7, Eindhoven'
+                    },
+                    contractorInfo: {
+                        name: 'Security Solutions B.V.',
+                        address: 'Beveiligingsweg 10, Delft',
+                        kvkNumber: '44332211'
+                    },
+                    contractSpecifics: {
+                        startDate: '2024-04-01',
+                        additionalNotes: 'Extra focus op IP bescherming'
+                    }
+                }
+            };
+
+            const contractTypes = ['arbeidsovereenkomst', 'leveranciersovereenkomst', 'geheimhoudingsverklaring'] as const;
+            const nextType = contractTypes[(contractTypes.indexOf(details.contractType as typeof contractTypes[number]) + 1) % contractTypes.length] || contractTypes[0];
+            
+            wizardStore.updateDetails(testData[nextType]);
+        } else {
+            wizardStore.reset();
+        }
     }
 
     function validateCurrentStep(): boolean {
@@ -33,6 +136,10 @@
             case 1:
                 if (!details.contractType) {
                     error = 'Selecteer een contract type';
+                    return false;
+                }
+                if (!details.sector) {
+                    error = 'Selecteer een branche/sector';
                     return false;
                 }
                 break;
@@ -80,6 +187,7 @@
             }
 
             generatedContract = data.content;
+            contractAnalysis = data.analysis;
             showSuccess = true;
         } catch (e) {
             console.error('Contract generation error:', e);
@@ -88,7 +196,28 @@
             loading = false;
         }
     }
+
+    function handleDownload() {
+        // Creëer een tijdelijke link element
+        const element = document.createElement('a');
+        
+        // Converteer contract naar blob
+        const file = new Blob([generatedContract], {type: 'text/markdown'});
+        element.href = URL.createObjectURL(file);
+        
+        // Genereer bestandsnaam op basis van contract type en datum
+        const date = new Date().toISOString().split('T')[0];
+        const fileName = `${details.contractType}_${date}.md`;
+        element.download = fileName;
+        
+        // Trigger download
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+    }
 </script>
+
+<svelte:window on:keydown={handleKeydown} />
 
 <!-- Header -->
 <nav class="fixed w-full bg-primary shadow-sm z-50">
@@ -106,8 +235,23 @@
 </nav>
 
 <!-- Main Content with padding for fixed header -->
-<div class="container mx-auto px-4 py-8 max-w-4xl pt-24">
+<div class="container mx-auto px-4 py-8 max-w-6xl pt-24">
     <h1 class="text-3xl font-bold mb-8">Contract Generator</h1>
+    
+    {#if loading}
+        <div class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-50 flex items-center justify-center">
+            <div class="bg-white p-8 rounded-lg shadow-xl flex flex-col items-center">
+                <div class="relative">
+                    <!-- Outer ring -->
+                    <div class="w-16 h-16 rounded-full border-4 border-indigo-100 border-t-indigo-600 animate-spin"></div>
+                    <!-- Inner ring -->
+                    <div class="absolute top-1 left-1 w-14 h-14 rounded-full border-4 border-indigo-50 border-t-indigo-400 animate-spin"></div>
+                </div>
+                <p class="mt-4 text-gray-600 font-medium">Contract wordt gegenereerd...</p>
+                <p class="text-sm text-gray-500 mt-2">Dit kan enkele momenten duren</p>
+            </div>
+        </div>
+    {/if}
     
     {#if !showSuccess}
         <ProgressIndicator currentStep={currentStep} />
@@ -133,6 +277,26 @@
                             <option value="arbeidsovereenkomst">Arbeidsovereenkomst</option>
                             <option value="leveranciersovereenkomst">Leveranciersovereenkomst</option>
                             <option value="geheimhoudingsverklaring">Geheimhoudingsverklaring</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="sector" class="block text-sm font-medium text-gray-700">Branche/Sector</label>
+                        <select
+                            id="sector"
+                            bind:value={details.sector}
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                        >
+                            <option value="">Selecteer een branche</option>
+                            <option value="retail">Retail & Winkeliers</option>
+                            <option value="horeca">Horeca & Catering</option>
+                            <option value="technologie">Technologie & IT</option>
+                            <option value="zakelijke_dienstverlening">Zakelijke Dienstverlening</option>
+                            <option value="bouw">Bouw & Constructie</option>
+                            <option value="gezondheidszorg">Gezondheidszorg</option>
+                            <option value="transport">Transport & Logistiek</option>
+                            <option value="onderwijs">Onderwijs & Training</option>
+                            <option value="productie">Productie & Industrie</option>
+                            <option value="overig">Overige Sectoren</option>
                         </select>
                     </div>
                 </div>
@@ -274,58 +438,82 @@
                 </div>
             {/if}
 
-            <div class="mt-8 flex justify-between">
-                {#if currentStep > 1}
-                    <button
-                        type="button"
-                        on:click={handlePrevious}
-                        class="inline-flex justify-center rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    >
-                        Vorige
-                    </button>
-                {:else}
-                    <div></div>
-                {/if}
-
-                <button
-                    type="button"
-                    on:click={currentStep === 4 ? handleSubmit : handleNext}
-                    disabled={loading}
-                    class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                >
-                    {#if loading}
-                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
+            <!-- Navigation buttons -->
+            <div class="mt-6 flex justify-between items-center">
+                <div class="space-x-4">
+                    {#if currentStep > 1}
+                        <button
+                            on:click={handlePrevious}
+                            class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        >
+                            Vorige
+                        </button>
                     {/if}
-                    {currentStep === 4 ? 'Genereer Contract' : 'Volgende'}
-                </button>
+                    <button
+                        on:click={() => handleReset(true)}
+                        class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                        Laad Test Data
+                    </button>
+                </div>
+                <div>
+                    {#if currentStep < 4}
+                        <button
+                            on:click={handleNext}
+                            class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        >
+                            Volgende
+                        </button>
+                    {:else}
+                        <button
+                            on:click={handleSubmit}
+                            class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            disabled={loading}
+                        >
+                            {loading ? 'Genereren...' : 'Genereer Contract'}
+                        </button>
+                    {/if}
+                </div>
             </div>
         </div>
     {:else}
-        <div class="bg-white p-6 rounded-lg shadow-lg">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold">Gegenereerd Contract</h2>
-                <button
-                    type="button"
-                    on:click={handleReset}
-                    class="inline-flex justify-center rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                >
-                    Nieuw Contract
-                </button>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Contract Preview -->
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-semibold mb-4">Gegenereerd Contract</h2>
+                <div class="prose max-w-none">
+                    {@html generatedContract}
+                </div>
             </div>
-            <div class="prose max-w-none">
-                <pre class="bg-gray-50 p-4 rounded-lg whitespace-pre-wrap">{generatedContract}</pre>
+
+            <!-- Contract Analysis -->
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-semibold mb-4">Contract Analyse</h2>
+                {#if contractAnalysis}
+                    <ContractAnalysis analysis={contractAnalysis} />
+                {/if}
             </div>
-            <div class="mt-6 flex justify-end space-x-4">
-                <button
-                    type="button"
-                    class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                >
-                    Download PDF
-                </button>
-            </div>
+        </div>
+
+        <div class="mt-6 flex justify-end space-x-4">
+            <button
+                on:click={() => handleReset(false)}
+                class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+                Nieuw Contract
+            </button>
+            <button
+                on:click={() => handleReset(true)}
+                class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+                Test Data
+            </button>
+            <button
+                on:click={handleDownload}
+                class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+                Download Contract
+            </button>
         </div>
     {/if}
 </div> 

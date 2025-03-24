@@ -10,6 +10,21 @@ interface ContractGenerationResponse {
     error?: string;
 }
 
+interface Risk {
+    severity: 'high' | 'medium' | 'low';
+    description: string;
+}
+
+interface AnalysisResult {
+    risks: Risk[];
+    recommendations: string[];
+    considerations: string[];
+}
+
+interface EnhancedContractGenerationResponse extends ContractGenerationResponse {
+    analysis: AnalysisResult;
+}
+
 class ClaudeApiError extends Error {
     constructor(message: string) {
         super(message);
@@ -146,6 +161,88 @@ Houd de tekst helder en praktisch, vermijd onnodig jargon.
 Controleer of alle placeholders correct zijn ingevuld en of bedragen en data duidelijk zijn weergegeven.
 Lever het contract in Markdown-formaat aan.`;
 
+const ENHANCED_SYSTEM_PROMPT = `Je bent een ervaren juridische AI-assistent gespecialiseerd in het genereren en analyseren van Nederlandse contracten.
+
+TAAK 1 - CONTRACT GENERATIE:
+1. Gebruik het aangeleverde template als basis
+2. Vul alle {{placeholders}} in met de gegeven details
+3. Zorg dat de tekst helder en praktisch is, vermijd juridisch jargon
+4. Controleer of alle data en bedragen correct zijn weergegeven
+5. Lever het contract op in Markdown-formaat
+
+TAAK 2 - SECTOR-SPECIFIEKE ANALYSE:
+Analyseer het contract in de context van de opgegeven sector. Identificeer:
+
+1. RISICO'S (maximaal 5):
+   - Hoog: Direct bedrijfskritische risico's die onmiddellijke aandacht vereisen
+   - Middel: Belangrijke aandachtspunten die op termijn aangepakt moeten worden
+   - Laag: Potentiële verbeterpunten voor optimalisatie
+
+2. AANBEVELINGEN (3-5 punten):
+   - Concrete, actionable verbetervoorstellen
+   - Focus op sector-specifieke best practices
+   - Praktisch implementeerbare suggesties
+
+3. SECTOR-SPECIFIEKE OVERWEGINGEN (2-4 punten):
+   - Relevante wet- en regelgeving voor de sector
+   - Gebruikelijke praktijken in de branche
+   - Specifieke marktomstandigheden
+
+FORMAT VOOR ANALYSE OUTPUT:
+Geef de analyse als JSON in het volgende formaat:
+{
+    "risks": [
+        {
+            "severity": "high|medium|low",
+            "description": "Concrete beschrijving van het risico"
+        }
+    ],
+    "recommendations": [
+        "Concrete, actionable aanbeveling"
+    ],
+    "considerations": [
+        "Relevante sector-specifieke overweging"
+    ]
+}
+
+Zorg dat alle output in het Nederlands is.`;
+
+const ANALYSIS_SYSTEM_PROMPT = `Je bent een juridische AI-assistent gespecialiseerd in het analyseren van Nederlandse contracten.
+
+TAAK - CONTRACT ANALYSE:
+Analyseer het gegeven contract en identificeer:
+
+1. RISICO'S (maximaal 5):
+   - Hoog: Direct bedrijfskritische risico's die onmiddellijke aandacht vereisen
+   - Middel: Belangrijke aandachtspunten die op termijn aangepakt moeten worden
+   - Laag: Potentiële verbeterpunten voor optimalisatie
+
+2. AANBEVELINGEN (3-5 punten):
+   - Concrete, actionable verbetervoorstellen
+   - Focus op best practices
+   - Praktisch implementeerbare suggesties
+
+3. JURIDISCHE OVERWEGINGEN (2-4 punten):
+   - Relevante wet- en regelgeving
+   - Gebruikelijke praktijken
+   - Specifieke aandachtspunten
+
+Geef de analyse als JSON in het volgende formaat:
+{
+    "risks": [
+        {
+            "severity": "high|medium|low",
+            "description": "Concrete beschrijving van het risico"
+        }
+    ],
+    "recommendations": [
+        "Concrete, actionable aanbeveling"
+    ],
+    "considerations": [
+        "Relevante juridische overweging"
+    ]
+}`;
+
 export async function generateContract(request: ContractGenerationRequest): Promise<ContractGenerationResponse> {
     try {
         const template = getTemplateContent(request.contractType);
@@ -157,10 +254,10 @@ export async function generateContract(request: ContractGenerationRequest): Prom
             headers: {
                 'Content-Type': 'application/json',
                 'x-api-key': PRIVATE_CLAUDE_API_KEY,
-                'anthropic-version': '2024-10-22'
+                'anthropic-version': '2023-06-01'
             },
             body: JSON.stringify({
-                model: 'claude-3-7-sonnet-20250219',
+                model: 'claude-3-sonnet-20240229',
                 max_tokens: 4096,
                 system: SYSTEM_PROMPT,
                 messages: [
@@ -203,5 +300,156 @@ Genereer een professioneel contract op basis van bovenstaande template en detail
             throw error;
         }
         throw new ClaudeApiError(`Failed to generate contract: ${(error as Error).message}`);
+    }
+}
+
+export async function generateEnhancedContract(request: ContractGenerationRequest): Promise<EnhancedContractGenerationResponse> {
+    try {
+        const template = getTemplateContent(request.contractType);
+        console.log('Template loaded:', template.substring(0, 100) + '...');
+        console.log('Request details:', request);
+        
+        const response = await fetch(`https://api.anthropic.com/v1/messages`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': PRIVATE_CLAUDE_API_KEY,
+                'anthropic-version': '2023-06-01'
+            },
+            body: JSON.stringify({
+                model: 'claude-3-sonnet-20240229',
+                max_tokens: 4096,
+                system: ENHANCED_SYSTEM_PROMPT,
+                messages: [
+                    {
+                        role: 'user',
+                        content: `Template:
+${template}
+
+Details:
+${JSON.stringify(request.details, null, 2)}
+
+Sector: ${request.details.sector}
+
+Aanvullingen en aandachtspunten:
+${request.details.contractSpecifics.additionalNotes || 'Geen aanvullingen'}
+
+Genereer een professioneel contract op basis van bovenstaande template en details.
+Geef ook een analyse van het contract specifiek voor de sector ${request.details.sector}.
+Format de analyse als JSON in het volgende formaat:
+{
+    "risks": [
+        {
+            "severity": "high|medium|low",
+            "description": "Concrete beschrijving van het risico"
+        }
+    ],
+    "recommendations": [
+        "Concrete, actionable aanbeveling"
+    ],
+    "considerations": [
+        "Relevante sector-specifieke overweging"
+    ]
+}`
+                    }
+                ]
+            })
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Claude API Error:', errorText);
+            throw new ClaudeApiError(`API request failed: ${response.statusText}. Details: ${errorText}`);
+        }
+
+        const data = await response.json();
+        console.log('Claude API Response:', data);
+        
+        if (!data.content || !data.content[0] || !data.content[0].text) {
+            throw new ClaudeApiError('Unexpected API response format');
+        }
+
+        const responseText = data.content[0].text;
+        const [contract, analysisJson] = responseText.split('```json');
+
+        if (!analysisJson) {
+            throw new ClaudeApiError('No analysis data found in response');
+        }
+
+        const analysis = JSON.parse(analysisJson.replace('```', '').trim());
+
+        return {
+            content: contract.trim(),
+            analysis
+        };
+    } catch (error) {
+        console.error('Enhanced contract generation error:', error);
+        if (error instanceof ClaudeApiError) {
+            throw error;
+        }
+        throw new ClaudeApiError(`Failed to generate enhanced contract: ${(error as Error).message}`);
+    }
+}
+
+export async function analyzeContract(contractContent: string): Promise<AnalysisResult> {
+    try {
+        const response = await fetch(`https://api.anthropic.com/v1/messages`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': PRIVATE_CLAUDE_API_KEY,
+                'anthropic-version': '2023-06-01'
+            },
+            body: JSON.stringify({
+                model: 'claude-3-sonnet-20240229',
+                max_tokens: 4096,
+                system: ANALYSIS_SYSTEM_PROMPT,
+                messages: [
+                    {
+                        role: 'user',
+                        content: `Analyseer het volgende contract:
+
+${contractContent}
+
+Geef een gedetailleerde analyse van de risico's, aanbevelingen en juridische overwegingen.`
+                    }
+                ]
+            })
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Claude API Error:', errorText);
+            throw new ClaudeApiError(`API request failed: ${response.statusText}. Details: ${errorText}`);
+        }
+
+        const data = await response.json();
+        
+        if (!data.content || !data.content[0] || !data.content[0].text) {
+            throw new ClaudeApiError('Unexpected API response format');
+        }
+
+        const analysisText = data.content[0].text;
+        let analysis: AnalysisResult;
+
+        try {
+            // Extract JSON from the response
+            const jsonMatch = analysisText.match(/\{[\s\S]*\}/);
+            if (!jsonMatch) {
+                throw new Error('No JSON found in response');
+            }
+            analysis = JSON.parse(jsonMatch[0]);
+        } catch (error) {
+            console.error('Error parsing analysis JSON:', error);
+            throw new ClaudeApiError('Failed to parse analysis response');
+        }
+
+        return analysis;
+    } catch (error) {
+        console.error('Contract analysis error:', error);
+        if (error instanceof ClaudeApiError) {
+            throw error;
+        }
+        throw new ClaudeApiError(`Failed to analyze contract: ${(error as Error).message}`);
     }
 } 

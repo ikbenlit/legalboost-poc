@@ -1,53 +1,59 @@
 import { writable } from 'svelte/store';
 
-export interface ContractDetails {
-    contractType: string;
-    companyInfo: {
-        name: string;
-        kvkNumber: string;
-        address: string;
-    };
-    contractorInfo: {
-        name: string;
-        address: string;
-        bsn?: string;
-        kvkNumber?: string;
-    };
-    contractSpecifics: {
-        startDate: string;
-        endDate?: string;
-        salary?: number;
-        rate?: number;
-        hoursPerWeek?: number;
-        notice_period?: number;
-        additionalNotes?: string;
-    };
+export interface CompanyInfo {
+    name: string;
+    kvkNumber: string;
+    address: string;
 }
 
-export interface WizardState {
+export interface ContractorInfo {
+    name: string;
+    address: string;
+    bsn?: string;
+    kvkNumber?: string;
+}
+
+export interface ContractSpecifics {
+    startDate: string;
+    endDate?: string;
+    salary?: number;
+    rate?: number;
+    hoursPerWeek?: number;
+    notice_period?: number;
+    additionalNotes?: string;
+}
+
+export interface ContractDetails {
+    contractType: 'arbeidsovereenkomst' | 'leveranciersovereenkomst' | 'geheimhoudingsverklaring';
+    sector: string;
+    companyInfo: CompanyInfo;
+    contractorInfo: ContractorInfo;
+    contractSpecifics: ContractSpecifics;
+}
+
+interface WizardState {
     currentStep: number;
     details: ContractDetails;
-    isValid: boolean;
 }
 
 const initialState: WizardState = {
     currentStep: 1,
     details: {
-        contractType: '',
+        contractType: 'arbeidsovereenkomst',
+        sector: '',
         companyInfo: {
             name: '',
             kvkNumber: '',
-            address: '',
+            address: ''
         },
         contractorInfo: {
             name: '',
-            address: '',
+            address: ''
         },
         contractSpecifics: {
-            startDate: '',
+            startDate: ''
         }
-    },
-    isValid: false
+    }
 };
 
 function createWizardStore() {
@@ -55,16 +61,22 @@ function createWizardStore() {
 
     return {
         subscribe,
-        nextStep: () => update(state => ({ ...state, currentStep: state.currentStep + 1 })),
-        previousStep: () => update(state => ({ ...state, currentStep: state.currentStep - 1 })),
-        setStep: (step: number) => update(state => ({ ...state, currentStep: step })),
-        updateDetails: (details: Partial<ContractDetails>) => 
-            update(state => ({
-                ...state,
-                details: { ...state.details, ...details }
-            })),
-        reset: () => set(initialState),
-        setValid: (isValid: boolean) => update(state => ({ ...state, isValid }))
+        nextStep: () => update(state => ({
+            ...state,
+            currentStep: Math.min(state.currentStep + 1, 4)
+        })),
+        previousStep: () => update(state => ({
+            ...state,
+            currentStep: Math.max(state.currentStep - 1, 1)
+        })),
+        updateDetails: (details: Partial<ContractDetails>) => update(state => ({
+            ...state,
+            details: {
+                ...state.details,
+                ...details
+            }
+        })),
+        reset: () => set(initialState)
     };
 }
 
