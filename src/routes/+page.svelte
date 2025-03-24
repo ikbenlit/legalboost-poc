@@ -8,8 +8,8 @@
     <div class="container mx-auto px-4 py-4">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-4">
-          <img src="/images/logo-scherplegal-svg.svg" alt="Legal Boost" class="h-8 w-auto brightness-0 invert" />
-          <span class="text-xl font-semibold text-text-light">Legal Boost</span>
+          <img src="/images/logo-scherplegal-svg.svg" alt="Legal Boost" class="h-8 w-auto" />
+
         </div>
         <div class="hidden md:flex items-center space-x-8">
           <a href="#features" class="text-text-light hover:text-hover transition-colors">Features</a>
@@ -111,12 +111,12 @@
           </p>
           <button
             on:click={() => goto('/wizard')}
-            class="w-full px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            class="bg-accent text-text-light px-6 py-3 rounded-full text-lg hover:bg-hover hover:text-primary transition-colors w-full"
           >
             Start Contract Generator
           </button>
         </div>
-
+        
         <!-- Contract Analysis Card -->
         <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
           <h3 class="text-xl font-semibold mb-4">Contract Analyse</h3>
@@ -126,7 +126,7 @@
           </p>
           <button
             on:click={() => goto('/analyze')}
-            class="w-full px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            class="bg-accent text-text-light px-6 py-3 rounded-full text-lg hover:bg-hover hover:text-primary transition-colors w-full"
           >
             Start Contract Analyse
           </button>
@@ -198,7 +198,7 @@
         <div>
           <div class="flex items-center space-x-4 mb-4">
             <img src="/images/logo-scherplegal-svg.svg" alt="Legal Boost" class="h-8 w-auto" />
-            <span class="text-xl font-semibold text-primary">Legal Boost</span>
+
           </div>
           <p class="text-gray-600">Juridische zekerheid voor ondernemers, eenvoudig en effectief.</p>
         </div>
