@@ -8,7 +8,7 @@
     <div class="container mx-auto px-4 py-4">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-4">
-          <img src="/src/assets/images/logo-scherplegal-svg.svg" alt="Legal Boost" class="h-8 w-auto brightness-0 invert" />
+          <img src="/images/logo-scherplegal-svg.svg" alt="Legal Boost" class="h-8 w-auto brightness-0 invert" />
           <span class="text-xl font-semibold text-text-light">Legal Boost</span>
         </div>
         <div class="hidden md:flex items-center space-x-8">
@@ -197,7 +197,7 @@
       <div class="grid md:grid-cols-4 gap-8">
         <div>
           <div class="flex items-center space-x-4 mb-4">
-            <img src="/src/assets/images/logo-scherplegal-svg.svg" alt="Legal Boost" class="h-8 w-auto" />
+            <img src="/images/logo-scherplegal-svg.svg" alt="Legal Boost" class="h-8 w-auto" />
             <span class="text-xl font-semibold text-primary">Legal Boost</span>
           </div>
           <p class="text-gray-600">Juridische zekerheid voor ondernemers, eenvoudig en effectief.</p>

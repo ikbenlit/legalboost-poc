@@ -227,7 +227,7 @@
                 class="flex items-center space-x-4 hover:opacity-80 transition-opacity"
                 on:click={() => goto('/')}
             >
-                <img src="/src/assets/images/logo-scherplegal-svg.svg" alt="Legal Boost" class="h-8 w-auto brightness-0 invert" />
+                <img src="/images/logo-scherplegal-svg.svg" alt="Legal Boost" class="h-8 w-auto brightness-0 invert" />
                 <span class="text-xl font-semibold text-text-light"></span>
             </button>
         </div>

@@ -3,7 +3,7 @@
 </script>
 
 <img
-  src="/src/assets/images/logo-scherplegal-svg.svg"
+  src="/images/logo-scherplegal-svg.svg"
   alt="ScherPLegal Logo"
   class={className}
   height="43.62"
