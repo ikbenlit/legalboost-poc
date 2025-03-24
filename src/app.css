@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply bg-neutral text-text-dark font-montserrat;
+  }
+  
+  h1 {
+    @apply text-title-lg font-montserrat text-text-dark;
+  }
+  
+  h2 {
+    @apply text-title font-montserrat text-text-dark;
+  }
+  
+  h3 {
+    @apply text-subtitle font-montserrat text-text-dark;
+  }
+  
+  p {
+    @apply text-body text-text-dark;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply border border-accent text-text-dark font-montserrat font-medium px-4 py-2 rounded hover:bg-hover hover:text-text-dark transition-colors;
+  }
+  
+  .card {
+    @apply bg-white p-6 rounded-lg shadow-sm;
+  }
+  
+  .quote {
+    @apply font-georgia italic text-text-dark;
+  }
+
+  /* Donkere achtergrond varianten */
+  .bg-primary h1,
+  .bg-primary h2,
+  .bg-primary h3,
+  .bg-primary p,
+  .bg-primary .quote {
+    @apply text-text-light;
+  }
+
+  .bg-primary .btn-primary {
+    @apply text-text-light hover:text-text-dark;
+  }
+}
