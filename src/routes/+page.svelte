@@ -30,13 +30,15 @@
   <section class="pt-32 pb-20 bg-primary">
     <div class="container mx-auto px-4">
       <div class="max-w-4xl mx-auto text-center">
-        <h1 class="text-5xl font-bold text-text mb-6">
-          Juridische documenten op maat,<br/> 
-          <span class="text-hover">binnen enkele minuten</span>
+        <h1 class="text-4xl font-bold text-text mb-6">
+          Hoi Marianne,<br/>
+          <span class="text-hover">Verrassing! Deze pagina is speciaal voor jou.</span>
         </h1>
+        <p class="text-xl text-text mb-6">
+          Waarom? Omdat jouw visie – "juridisch ontzorgen zonder gezeik" – te sterk is om in een mapje of spreadsheet te blijven hangen.
+        </p>
         <p class="text-xl text-text mb-8">
-          Genereer professionele juridische documenten met AI-ondersteuning. 
-          Snel, betrouwbaar en op maat gemaakt voor jouw situatie.
+          Dit is een eerste, klikbare versie van iets groters: een app die jouw kennis slim inzet, klanten vooruit helpt én jou minder werk geeft. Geen theorie, maar praktijk. Geen eindeloos gepuzzel, maar gewoon: <em>"Dit klopt, regel het maar."</em>
         </p>
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
           <button 
