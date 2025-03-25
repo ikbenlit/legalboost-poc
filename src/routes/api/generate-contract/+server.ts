@@ -49,7 +49,7 @@ export const POST = (async ({ request }) => {
                 success: false,
                 error: `Er is een fout opgetreden: ${error.message}`,
                 details: error.name
-            }, { status: 500 });
+            }, { status: error.message.includes('502') ? 502 : 500 });
         }
         return json({
             success: false,

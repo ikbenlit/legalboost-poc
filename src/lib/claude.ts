@@ -307,7 +307,10 @@ export async function generateEnhancedContract(request: ContractGenerationReques
     try {
         const template = getTemplateContent(request.contractType);
         console.log('Template loaded:', template.substring(0, 100) + '...');
-        console.log('Request details:', request);
+        console.log('Request details:', JSON.stringify(request, null, 2));
+        
+        // Log API key status (niet de key zelf)
+        console.log('Claude API Key configured:', !!PRIVATE_CLAUDE_API_KEY);
         
         const response = await fetch(`https://api.anthropic.com/v1/messages`, {
             method: 'POST',
@@ -358,28 +361,45 @@ Format de analyse als JSON in het volgende formaat:
 
         if (!response.ok) {
             const errorText = await response.text();
-            console.error('Claude API Error:', errorText);
-            throw new ClaudeApiError(`API request failed: ${response.statusText}. Details: ${errorText}`);
+            console.error('Claude API Error Response:', {
+                status: response.status,
+                statusText: response.statusText,
+                headers: Object.fromEntries(response.headers.entries()),
+                body: errorText
+            });
+            throw new ClaudeApiError(`API request failed: ${response.status} ${response.statusText}. Details: ${errorText}`);
         }
 
         const data = await response.json();
-        console.log('Claude API Response:', data);
+        console.log('Claude API Response:', JSON.stringify(data, null, 2));
         
         if (!data.content || !data.content[0] || !data.content[0].text) {
+            console.error('Unexpected API response format:', data);
             throw new ClaudeApiError('Unexpected API response format');
         }
 
         const responseText = data.content[0].text;
-        const [contract, analysisJson] = responseText.split('```json');
-
-        if (!analysisJson) {
-            throw new ClaudeApiError('No analysis data found in response');
+        
+        // Verbeterde JSON extractie
+        const jsonMatch = responseText.match(/```json\s*(\{[\s\S]*?\})\s*```/);
+        if (!jsonMatch) {
+            console.error('No JSON found in response:', responseText);
+            throw new ClaudeApiError('Geen analyse data gevonden in de response');
         }
 
-        const analysis = JSON.parse(analysisJson.replace('```', '').trim());
+        let analysis: AnalysisResult;
+        try {
+            analysis = JSON.parse(jsonMatch[1]);
+        } catch (parseError) {
+            console.error('Error parsing analysis JSON:', parseError);
+            throw new ClaudeApiError('Fout bij het verwerken van de analyse data');
+        }
+
+        // Haal het contract deel op (alles voor de JSON)
+        const contract = responseText.substring(0, responseText.indexOf('```json')).trim();
 
         return {
-            content: contract.trim(),
+            content: contract,
             analysis
         };
     } catch (error) {

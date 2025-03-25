@@ -170,6 +170,7 @@
         if (!validateCurrentStep()) return;
 
         loading = true;
+        error = '';
         try {
             const response = await fetch('/api/generate-contract', {
                 method: 'POST',
@@ -183,7 +184,7 @@
             console.log('API Response:', data);
             
             if (!response.ok) {
-                throw new Error(data.error || 'Er is een fout opgetreden');
+                throw new Error(data.error || `Er is een fout opgetreden (Status: ${response.status})`);
             }
 
             generatedContract = data.content;
@@ -191,7 +192,12 @@
             showSuccess = true;
         } catch (e) {
             console.error('Contract generation error:', e);
-            error = e instanceof Error ? e.message : 'Er is een fout opgetreden';
+            error = e instanceof Error ? e.message : 'Er is een fout opgetreden bij het genereren van het contract';
+            
+            // Toon meer details in de error message
+            if (e instanceof Error && e.message.includes('502')) {
+                error += '\n\nMogelijke oorzaken:\n- De service is tijdelijk niet beschikbaar\n- Er is een probleem met de API configuratie\n- De server is overbelast\n\nProbeer het over enkele minuten opnieuw.';
+            }
         } finally {
             loading = false;
         }
