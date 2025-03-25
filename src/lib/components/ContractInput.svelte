@@ -6,7 +6,7 @@
         analyze: { text: string; type: 'file' | 'text' };
     }>();
 
-    let activeTab: 'file' | 'text' = 'file';
+    let activeTab: 'text' | 'file' = 'text';
     let file: File | null = null;
     let contractText = '';
     let error = '';
@@ -61,15 +61,6 @@
         <nav class="-mb-px flex space-x-8" aria-label="Tabs">
             <button
                 class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm
-                    {activeTab === 'file'
-                        ? 'border-indigo-500 text-indigo-600'
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}"
-                on:click={() => activeTab = 'file'}
-            >
-                Bestand uploaden
-            </button>
-            <button
-                class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm
                     {activeTab === 'text'
                         ? 'border-indigo-500 text-indigo-600'
                         : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}"
@@ -77,33 +68,20 @@
             >
                 Tekst plakken
             </button>
+            <button
+                class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm
+                    {activeTab === 'file'
+                        ? 'border-indigo-500 text-indigo-600'
+                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}"
+                on:click={() => activeTab = 'file'}
+            >
+                Bestand uploaden
+            </button>
         </nav>
     </div>
 
     <!-- Content -->
-    {#if activeTab === 'file'}
-        <div class="mb-6">
-            <label for="contract-file" class="block text-sm font-semibold leading-6 text-gray-900 mb-2">
-                Upload Contract
-            </label>
-            <input
-                id="contract-file"
-                type="file"
-                accept=".txt"
-                on:change={handleFileSelect}
-                class="block w-full text-sm text-gray-500
-                    file:mr-4 file:py-2 file:px-4
-                    file:rounded-full file:border-0
-                    file:text-sm file:font-semibold
-                    file:bg-indigo-50 file:text-indigo-700
-                    hover:file:bg-indigo-100
-                    focus:outline-none"
-            />
-            <p class="mt-2 text-sm text-gray-500">
-                Toegestane formaten: TXT
-            </p>
-        </div>
-    {:else}
+    {#if activeTab === 'text'}
         <div class="mb-6">
             <label for="contract-text" class="block text-sm font-semibold leading-6 text-gray-900 mb-2">
                 Contract Tekst
@@ -124,6 +102,28 @@
                     Wissen
                 </button>
             </div>
+        </div>
+    {:else}
+        <div class="mb-6">
+            <label for="contract-file" class="block text-sm font-semibold leading-6 text-gray-900 mb-2">
+                Upload Contract
+            </label>
+            <input
+                id="contract-file"
+                type="file"
+                accept=".txt"
+                on:change={handleFileSelect}
+                class="block w-full text-sm text-gray-500
+                    file:mr-4 file:py-2 file:px-4
+                    file:rounded-full file:border-0
+                    file:text-sm file:font-semibold
+                    file:bg-indigo-50 file:text-indigo-700
+                    hover:file:bg-indigo-100
+                    focus:outline-none"
+            />
+            <p class="mt-2 text-sm text-gray-500">
+                Toegestane formaten: TXT
+            </p>
         </div>
     {/if}
 

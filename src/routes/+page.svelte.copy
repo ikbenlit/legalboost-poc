@@ -1,0 +1,156 @@
+<script lang="ts">
+  import { goto } from '$app/navigation';
+  import '../app.css';
+</script>
+
+<div class="min-h-screen bg-white">
+  <!-- Navigation -->
+  <nav class="fixed w-full bg-primary shadow-sm z-50">
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+          <img src="/images/logo-scherplegal-svg.svg" alt="Legal Boost" class="h-8 w-auto" />
+        </div>
+        <div class="hidden md:flex items-center space-x-8">
+          <a href="#tools" class="text-text-light hover:text-hover transition-colors">Tools</a>
+          <a href="#how-it-works" class="text-text-light hover:text-hover transition-colors">Hoe het werkt</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="pt-32 pb-20 bg-primary">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto text-center">
+        <h1 class="text-4xl font-bold text-text mb-6">
+          Hoi Marianne,<br />
+          <span class="text-hover">Dit is jouw Legal Boost App (PoC)</span>
+        </h1>
+        <p class="text-xl text-text mb-6">
+          Op de strategiedag kwam jouw visie eruit: mkb'ers juridisch ontzorgen zonder gezeik. Dit is een eerste versie van een app die dat mogelijk maakt – jouw expertise slim ingezet, minder werk voor jou, meer waarde voor je klanten.
+        </p>
+        <p class="text-xl text-text mb-8">
+          Geen repetitieve taken of stress, maar een tool die schaalbaarheid en balans brengt. Klik rond, test het, en laten we het samen beter maken!
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pijnpunten Section -->
+  <section class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-12">Pijnpunten die we aanpakken</h2>
+      <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div>
+          <h3 class="text-xl font-semibold mb-2">Repetitieve taken</h3>
+          <p class="text-gray-600">Steeds templates sturen en basisvragen beantwoorden vreet tijd die je liever aan je klanten besteedt.</p>
+        </div>
+        <div>
+          <h3 class="text-xl font-semibold mb-2">Schaalbaarheidsstress</h3>
+          <p class="text-gray-600">Zonder slimme tools blijf je hangen in tijd-voor-geld, wat groei blokkeert.</p>
+        </div>
+        <div>
+          <h3 class="text-xl font-semibold mb-2">Klantonvriendelijkheid</h3>
+          <p class="text-gray-600">Mkb'ers willen simpele contracten, geen losse documenten of gepuzzel.</p>
+        </div>
+        <div>
+          <h3 class="text-xl font-semibold mb-2">Juridische chaos</h3>
+          <p class="text-gray-600">Klanten missen structuur; jij blijft pleisters plakken i.p.v. vooruit helpen.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="tools" class="py-20">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-12">Jouw Legal Boost App</h2>
+      
+      <!-- Huidige PoC Tools -->
+      <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12">
+        <div class="bg-primary p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+          <h3 class="text-xl font-semibold mb-2 text-text-light">Contract Generator <span class="text-sm text-hover">(Nu in de PoC)</span></h3>
+          <p class="text-text-light/90">Klanten maken in 5-10 minuten een juridisch solide contract (bijv. arbeidscontract) met 3-5 simpele vragen.</p>
+        </div>
+        <div class="bg-primary p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+          <h3 class="text-xl font-semibold mb-2 text-text-light">Contract Analyse <span class="text-sm text-hover">(Nu in de PoC)</span></h3>
+          <p class="text-text-light/90">Klanten plakken een contract; de app geeft een risicoanalyse met jouw juridische insteek.</p>
+        </div>
+      </div>
+  
+      <!-- Toekomstideeën -->
+      <div class="max-w-4xl mx-auto text-center">
+        <h3 class="text-2xl font-semibold mb-6 text-gray-800">Meer ideeën om te sparren?</h3>
+        <p class="text-xl text-gray-600 mb-4">
+          Denk aan een <strong>Kennisbank</strong> (slimme FAQ voor minder vragen), <strong>Upsell-knoppen</strong> (jouw programma €499, contractcheck €100), of zelfs een chatfunctie/mini-cursus. Wat zie jij erin? Laten we het bespreken!
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section id="how-it-works" class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-12">Hoe het werkt</h2>
+      <div class="max-w-4xl mx-auto">
+        <div class="grid gap-8">
+          <div class="flex items-start gap-4">
+            <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center flex-shrink-0">1</div>
+            <div>
+              <h3 class="text-xl font-semibold mb-2">Kies een tool</h3>
+              <p class="text-gray-600">Contract Generator voor nieuwe documenten, Contract Analyse voor bestaande, of raadpleeg de Kennisbank.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center flex-shrink-0">2</div>
+            <div>
+              <h3 class="text-xl font-semibold mb-2">Vul in of upload</h3>
+              <p class="text-gray-600">Beantwoord vragen (bijv. "Naam? Looptijd?") of plak een contract voor analyse.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center flex-shrink-0">3</div>
+            <div>
+              <h3 class="text-xl font-semibold mb-2">Krijg resultaat</h3>
+              <p class="text-gray-600">Direct een contract in jouw stijl of een risicoanalyse – klaar voor gebruik.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-20">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto text-center">
+        <h2 class="text-3xl font-bold mb-6">Wat vind je ervan, Marianne?</h2>
+        <p class="text-xl text-gray-600 mb-8">
+          Dit is wat we willen bereiken: minder werk voor jou, meer schaalbaarheid, blijere klanten. Test de app en laat me weten wat je denkt!
+        </p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <button 
+            class="bg-accent text-text-light px-8 py-3 rounded-full text-lg hover:bg-hover hover:text-primary transition-colors w-full sm:w-auto"
+            on:click={() => goto('/wizard')}
+          >
+            Probeer de Contract Generator
+          </button>
+          <button 
+            class="bg-accent text-text-light px-8 py-3 rounded-full text-lg hover:bg-hover hover:text-primary transition-colors w-full sm:w-auto"
+            on:click={() => goto('/analyze')}
+          >
+            Test de Contract Analyse
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-50 py-12">
+    <div class="container mx-auto px-4 text-center">
+      <img src="/images/logo-scherplegal-svg.svg" alt="Legal Boost" class="h-8 w-auto mx-auto mb-4" />
+      <p class="text-gray-600">&copy; 2025 Legal Boost PoC – Gemaakt voor Marianne.</p>
+    </div>
+  </footer>
+</div>

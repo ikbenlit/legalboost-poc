@@ -12,15 +12,10 @@
 
         </div>
         <div class="hidden md:flex items-center space-x-8">
-          <a href="#features" class="text-text-light hover:text-hover transition-colors">Features</a>
+          <a href="#features" class="text-text-light hover:text-hover transition-colors">Aanpakken</a>
           <a href="#how-it-works" class="text-text-light hover:text-hover transition-colors">Hoe het werkt</a>
           <a href="/faq" class="text-text-light hover:text-hover transition-colors">FAQ</a>
-          <button 
-            class="bg-accent text-text-light px-6 py-3 rounded-full text-lg hover:bg-hover hover:text-primary transition-colors w-full sm:w-auto"
-            on:click={() => goto('/wizard')}
-          >
-            Start nu
-          </button>
+
         </div>
       </div>
     </div>
@@ -32,15 +27,27 @@
       <div class="max-w-4xl mx-auto text-center">
         <h1 class="text-4xl font-bold text-text mb-6">
           Hoi Marianne,<br/>
-          <span class="text-hover">Verrassing! Deze pagina is speciaal voor jou.</span>
+          <span class="text-hover">Verrassing! Dit is jouw Legal Boost App – speciaal voor jou.</span>
         </h1>
-        <p class="text-xl text-text mb-6">
-          Waarom? Omdat jouw visie – "juridisch ontzorgen zonder gezeik" – te sterk is om in een mapje of spreadsheet te blijven hangen.
-        </p>
         <p class="text-xl text-text mb-8">
-          Dit is een eerste, klikbare versie van iets groters: een app die jouw kennis slim inzet, klanten vooruit helpt én jou minder werk geeft. Geen theorie, maar praktijk. Geen eindeloos gepuzzel, maar gewoon: <em>"Dit klopt, regel het maar."</em>
+          Op de strategiedag spatte jouw visie eruit: mkb'ers juridisch ontzorgen zonder gezeik. Omdat die visie te sterk is om in een mapje of spreadsheet te blijven hangen, is dit een eerste, klikbare versie van een app die het mogelijk maakt – met een Contract Generator, Contract Analyse en Kennisbank om jouw expertise slim in te zetten, minder werk voor jou en meer waarde voor je klanten. Geen repetitieve taken of stress, maar een tool die schaalbaarheid en balans brengt. Klik rond, test het, en laten we het samen beter maken!
         </p>
+
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <button 
+            class="bg-accent text-text-light px-8 py-3 rounded-full text-lg hover:bg-hover hover:text-primary transition-colors w-full sm:w-auto"
+            on:click={() => goto('/wizard')}
+          >
+            Probeer de Contract Generator
+          </button>
+          <button 
+            class="bg-accent text-text-light px-8 py-3 rounded-full text-lg hover:bg-hover hover:text-primary transition-colors w-full sm:w-auto"
+            on:click={() => goto('/analyze')}
+          >
+            Test de Contract Analyse
+          </button>
+        </div>
+  <!--      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
           <button 
             class="bg-accent text-text-light px-8 py-3 rounded-full text-lg hover:bg-hover hover:text-primary transition-colors w-full sm:w-auto"
             on:click={() => goto('/wizard')}
@@ -57,42 +64,78 @@
             </svg>
           </a>
         </div>
+        -->
       </div>
     </div>
   </section>
 
-  <!-- Features Section -->
+  <!-- Pijnpunten Section -->
   <section id="features" class="py-20">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center mb-12">Waarom Legal Boost?</h2>
-      <div class="grid md:grid-cols-3 gap-8">
+      <h2 class="text-3xl font-bold text-center mb-12">Pijnpunten die we aanpakken</h2>
+      <div class="grid md:grid-cols-2 gap-8">
         <div class="bg-primary p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
           <div class="w-12 h-12 bg-hover/20 rounded-lg flex items-center justify-center mb-4">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-hover" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <h3 class="text-xl font-semibold mb-2 text-text-light">Razendsnel</h3>
-          <p class="text-text-light/90">Genereer juridische documenten binnen enkele minuten, niet dagen of weken.</p>
+          <h3 class="text-xl font-semibold mb-2 text-text-light">Repetitieve taken</h3>
+          <p class="text-text-light/90">Steeds templates sturen en basisvragen beantwoorden vreet tijd die je liever aan je klanten besteedt.</p>
         </div>
         <div class="bg-primary p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
           <div class="w-12 h-12 bg-hover/20 rounded-lg flex items-center justify-center mb-4">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-hover" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
             </svg>
           </div>
-          <h3 class="text-xl font-semibold mb-2 text-text-light">Betrouwbaar</h3>
-          <p class="text-text-light/90">Door juridische experts gevalideerde templates en AI-ondersteuning.</p>
+          <h3 class="text-xl font-semibold mb-2 text-text-light">Schaalbaarheidsstress</h3>
+          <p class="text-text-light/90">Zonder slimme tools blijf je hangen in tijd-voor-geld, wat groei blokkeert.</p>
         </div>
         <div class="bg-primary p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
           <div class="w-12 h-12 bg-hover/20 rounded-lg flex items-center justify-center mb-4">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-hover" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
           </div>
-          <h3 class="text-xl font-semibold mb-2 text-text-light">Op maat</h3>
-          <p class="text-text-light/90">Elk document wordt specifiek aangepast aan jouw situatie en wensen.</p>
+          <h3 class="text-xl font-semibold mb-2 text-text-light">Klantonvriendelijkheid</h3>
+          <p class="text-text-light/90">Mkb'ers willen simpele contracten, geen losse documenten of gepuzzel.</p>
         </div>
+        <div class="bg-primary p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+          <div class="w-12 h-12 bg-hover/20 rounded-lg flex items-center justify-center mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-hover" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2 text-text-light">Juridische chaos</h3>
+          <p class="text-text-light/90">Klanten missen structuur; jij blijft pleisters plakken i.p.v. vooruit helpen.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="tools" class="py-20 bg-gradient-to-br from-purple-100 via-white to-green-100">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-12">Wat zit er nu in deze app?</h2>
+      
+      <!-- Huidige PoC Tools -->
+      <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12">
+        <div class="bg-primary p-6 rounded-xl shadow-sm hover:shadow-md transition-all hover:scale-[1.02]">
+          <h3 class="text-xl font-semibold mb-2 text-text-light">Contract Generator <span class="text-sm font-normal text-hover">(Nu in de PoC)</span></h3>
+          <p class="text-text-light/90">Klanten maken in 5-10 minuten een juridisch solide contract (bijv. arbeidscontract) met 3-5 simpele vragen.</p>
+        </div>
+        <div class="bg-primary p-6 rounded-xl shadow-sm hover:shadow-md transition-all hover:scale-[1.02]">
+          <h3 class="text-xl font-semibold mb-2 text-text-light">Contract Analyse <span class="text-sm font-normal text-hover">(Nu in de PoC)</span></h3>
+          <p class="text-text-light/90">Klanten plakken een contract; de app geeft een risicoanalyse met jouw juridische insteek.</p>
+        </div>
+      </div>
+  
+      <!-- Toekomstideeën -->
+      <div class="max-w-4xl mx-auto text-center">
+        <h3 class="text-2xl font-semibold mb-6 text-gray-800">Meer ideeën om te sparren?</h3>
+        <p class="text-xl text-gray-600 mb-4">
+          Denk aan een <strong class="text-purple-700">Kennisbank</strong> (slimme FAQ voor minder vragen), <strong class="text-green-700">Upsell-knoppen</strong> (jouw programma €499, contractcheck €100), of zelfs een chatfunctie/mini-cursus. Wat zie jij erin? Laten we het bespreken!
+        </p>
       </div>
     </div>
   </section>
@@ -168,26 +211,23 @@
   <section class="py-20">
     <div class="container mx-auto px-4">
       <div class="max-w-4xl mx-auto text-center">
-        <h2 class="text-3xl font-bold mb-6">Klaar om te beginnen?</h2>
+        <h2 class="text-3xl font-bold mb-6">Wat vind je ervan, Marianne?</h2>
         <p class="text-xl text-gray-600 mb-8">
-          Genereer nu je eerste juridische document of analyseer een bestaand contract met Legal Boost.
+          Dit is wat we willen bereiken: minder werk voor jou, meer schaalbaarheid, blijere klanten. Test de app en laat me weten wat je denkt!
         </p>
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
           <button 
             class="bg-accent text-text-light px-8 py-3 rounded-full text-lg hover:bg-hover hover:text-primary transition-colors w-full sm:w-auto"
             on:click={() => goto('/wizard')}
           >
-            Start nu
+            Probeer de Contract Generator
           </button>
-          <a 
-            href="/faq" 
-            class="text-gray-600 hover:text-primary transition-colors flex items-center gap-2 w-full sm:w-auto justify-center"
+          <button 
+            class="bg-accent text-text-light px-8 py-3 rounded-full text-lg hover:bg-hover hover:text-primary transition-colors w-full sm:w-auto"
+            on:click={() => goto('/analyze')}
           >
-            Bekijk FAQ
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-            </svg>
-          </a>
+            Test de Contract Analyse
+          </button>
         </div>
       </div>
     </div>
