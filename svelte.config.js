@@ -3,16 +3,18 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-	preprocess: vitePreprocess(),
-	kit: {
-		adapter: adapter({
-			// Optionele instellingen voor Vercel
-			runtime: 'nodejs18.x', // Zorg dat dit overeenkomt met je Node-versie
-		}),
-		alias: {
-			$lib: './src/lib'
-		}
-	}
+  preprocess: vitePreprocess(),
+  kit: {
+    adapter: adapter({
+      runtime: 'nodejs20.x',
+      regions: ['fra1'],
+      maxDuration: 60,
+      memory: 1024
+    }),
+    alias: {
+      $lib: './src/lib'
+    }
+  }
 };
 
 export default config;

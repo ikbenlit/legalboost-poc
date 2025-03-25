@@ -44,6 +44,23 @@ export const POST = (async ({ request }) => {
                 stack: error.stack
             });
             
+            // Specifieke error handling voor verschillende scenario's
+            if (error.message.includes('timeout') || error.message.includes('504')) {
+                return json({
+                    success: false,
+                    error: 'De service heeft te lang geduurd om te antwoorden. Probeer het later opnieuw.',
+                    details: 'timeout'
+                }, { status: 504 });
+            }
+            
+            if (error.message.includes('API key') || error.message.includes('authentication')) {
+                return json({
+                    success: false,
+                    error: 'Er is een probleem met de API configuratie. Neem contact op met de beheerder.',
+                    details: 'authentication'
+                }, { status: 500 });
+            }
+            
             // Stuur de error details terug naar de client
             return json({
                 success: false,

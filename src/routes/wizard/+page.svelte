@@ -180,10 +180,20 @@
                 body: JSON.stringify(details)
             });
 
-            const data = await response.json();
+            let data;
+            try {
+                data = await response.json();
+            } catch (e) {
+                console.error('JSON parse error:', e);
+                throw new Error('De server heeft een ongeldige response teruggegeven. Probeer het later opnieuw.');
+            }
+
             console.log('API Response:', data);
             
             if (!response.ok) {
+                if (response.status === 504) {
+                    throw new Error('De server heeft te lang geduurd om te antwoorden. Dit kan komen door een tijdelijke overbelasting. Probeer het over enkele minuten opnieuw.');
+                }
                 throw new Error(data.error || `Er is een fout opgetreden (Status: ${response.status})`);
             }
 
