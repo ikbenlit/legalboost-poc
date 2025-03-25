@@ -370,16 +370,26 @@ Format de analyse als JSON in het volgende formaat:
         }
 
         const responseText = data.content[0].text;
-        const [contract, analysisJson] = responseText.split('```json');
-
-        if (!analysisJson) {
-            throw new ClaudeApiError('No analysis data found in response');
+        
+        // Zoek naar JSON in de response met een meer flexibele aanpak
+        const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+        if (!jsonMatch) {
+            throw new ClaudeApiError('Geen analyse data gevonden in de response');
         }
 
-        const analysis = JSON.parse(analysisJson.replace('```', '').trim());
+        let analysis: AnalysisResult;
+        try {
+            analysis = JSON.parse(jsonMatch[0]);
+        } catch (parseError) {
+            console.error('Error parsing analysis JSON:', parseError);
+            throw new ClaudeApiError('Fout bij het verwerken van de analyse data');
+        }
+
+        // Verwijder de JSON uit de response text om het contract te krijgen
+        const contract = responseText.replace(jsonMatch[0], '').trim();
 
         return {
-            content: contract.trim(),
+            content: contract,
             analysis
         };
     } catch (error) {
