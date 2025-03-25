@@ -3,6 +3,5 @@
   publish = "build"
 
 [functions]
-  [functions.timeout]
+  timeout = 60
   external_node_modules = ["@anthropic-ai/sdk"]
-  timeout = 60 
