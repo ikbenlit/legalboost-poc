@@ -3,11 +3,4 @@
   publish = "build"
 
 [functions]
-  # Verhoog de timeout voor alle functions
-  timeout = 30
-
-[functions."api/analyze-contract"]
-  timeout = 60
-
-[functions."api/generate-contract"]
   timeout = 60 
